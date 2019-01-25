@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  webapp:
+      container_name: webapp
+      build: ./docker
+      volumes:
+        - './:/var/www/html'
+      depends_on:
+        - database
+
+  nginx:
+      image: nginx
+      ports:
+        - '8000:8000'
+      volumes:
+        - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+      depends_on:
+        - webapp
+
+  database:
+      image: mysql:5.7
+      container_name: mysql-database
+      volumes:
+          - db_data:/var/lib/mysql
+      restart: always
+      environment:
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: saloodo-store
+          MYSQL_USER: prestashop
+          MYSQL_PASSWORD: prestashop
+      networks:
+          - saloodo
+
+networks:
+    saloodo:
+volumes:
+    db_data:
