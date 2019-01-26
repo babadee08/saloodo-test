@@ -20,4 +20,23 @@ class ProductTest extends TestCase
         $this->assertEquals($product->productType->id, $product_type->id);
     }
 
+    /**
+     * @test
+     */
+    public function a_product_has_a_price()
+    {
+        $product = factory(Product::class)->create();
+
+        $this->assertFalse($product->hasPrice());
+
+        $product->price()->create([
+            'price' => 1000,
+            'discount' => 200
+        ]);
+
+        $product->refresh();
+
+        $this->assertTrue($product->hasPrice());
+    }
+
 }
