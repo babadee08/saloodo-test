@@ -5,6 +5,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property integer product_type_id
+ * @property integer price
+ */
 class Product extends Model
 {
     protected $table = 'products';
@@ -34,6 +38,16 @@ class Product extends Model
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bundle()
+    {
+        if ($this->product_type_id == ProductType::BUNDLE_PRODUCT_ID) {
+            return $this->hasMany(ProductBundle::class, 'bundle_id');
+        }
     }
 
 }

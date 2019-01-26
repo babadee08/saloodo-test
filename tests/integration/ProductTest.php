@@ -39,4 +39,23 @@ class ProductTest extends TestCase
         $this->assertTrue($product->hasPrice());
     }
 
+    /**
+     * @test
+     */
+    public function a_bundle_product_has_sub_products()
+    {
+        $product_type_single = ProductType::find(1);
+        $product_type_bundle = ProductType::find(2);
+
+        $bundle_product = factory(Product::class)->create(['product_type_id' => $product_type_bundle->id]);
+
+        $sub_products = factory(Product::class, 5)->create(['product_type_id' => $product_type_single->id]);
+
+        $sub_products->map(function ($product) use ($bundle_product) {
+            //dd($bundle_product->bundle);
+            $bundle_product->bundle()->create(['product_id' => $product->id]);
+        });
+
+        $this->assertEquals($bundle_product->bundle->count(), 5);
+    }
 }
