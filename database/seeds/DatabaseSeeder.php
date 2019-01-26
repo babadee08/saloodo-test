@@ -24,5 +24,7 @@ class DatabaseSeeder extends Seeder
                 'discount' => 200
             ]);
         });
+
+        factory(\App\Models\User::class, 5)->create();
     }
 }
