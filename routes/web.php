@@ -19,7 +19,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // products endpoints
     $router->get('/products', 'ProductsController@index');
     $router->post('/products', 'ProductsController@create');
-    $router->get('/products/{id}', 'ProductsController@getProductDetail');
+    $router->get('/products/{id}', 'ProductsController@show');
     $router->put('/products/{id}', 'ProductsController@updateProduct');
 
     // auth endpoints

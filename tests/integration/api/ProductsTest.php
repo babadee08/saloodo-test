@@ -22,6 +22,21 @@ class ProductsTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function anyone_can_see_a_single_product()
+    {
+        $products = $this->createTestProducts();
+        $first_product = $products[0];
+
+        $this->get('/api/products/' . $first_product->id)->seeJsonContains([
+            'status' => 'success',
+            'message' => 'Successfully fetched a single product',
+            'name' => $first_product->name
+        ]);
+    }
+
 
     public function createTestProducts()
     {
