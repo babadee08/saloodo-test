@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Components\Response;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -16,10 +17,6 @@ class ProductsController extends Controller
     //getAllProduct
     public function index()
     {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully fetched all products',
-            'data' => Product::all()
-        ]);
+        return Response::success(Product::all(), 'Successfully fetched all products');
     }
 }
