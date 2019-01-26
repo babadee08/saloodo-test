@@ -29,4 +29,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function order()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function createOrder(array $data)
+    {
+        return $this->order()->create($data);
+    }
 }
