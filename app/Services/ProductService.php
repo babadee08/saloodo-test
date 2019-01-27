@@ -35,21 +35,19 @@ class ProductService
      */
     public function createProduct(array $data)
     {
-        $data = collect($data);
-
         $product_attributes = ['name', 'description', 'sku', 'qty', 'product_type_id'];
 
-        $product_data = $data->only($product_attributes);
+        $product_data = array_only($data, $product_attributes);
 
-        $product = Product::create($product_data->all());
+        $product = Product::create($product_data);
 
-        if ($data->contains('products', array()) && $product->isBundle()) {
+        if (array_has($data, 'products') && $product->isBundle()) {
             // create the sub products
-            $this->addBundleProducts($data->all(), $product);
+            $this->addBundleProducts($data, $product);
 
         }
 
-        $this->createProductPrice($data->all(), $product);
+        $this->createProductPrice($data, $product);
 
         return $product;
     }
