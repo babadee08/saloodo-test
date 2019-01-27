@@ -25,7 +25,7 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
 $factory->define(\App\Models\Product::class, function (Faker $faker) {
     return [
         'name' => $faker->unique()->word,
-        'sku' => $faker->unique()->text(5),
+        'sku' => $faker->unique()->ean8,
         'qty' => 10,
         'description' => $faker->sentence,
         'product_type_id' => function () {

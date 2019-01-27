@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 
 use App\Components\Response;
 use App\Models\Product;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class ProductsController extends Controller
 {
+    private $product_service;
+
     /**
      * ProductsController constructor.
+     * @param ProductService $service
      */
-    public function __construct()
+    public function __construct(ProductService $service)
     {
         $this->middleware('auth', [
             'except' => ['index', 'show']
@@ -21,6 +25,8 @@ class ProductsController extends Controller
         $this->middleware('admin', [
             'except' => ['index', 'show']
         ]);
+
+        $this->product_service = $service;
     }
 
     /**
@@ -35,14 +41,13 @@ class ProductsController extends Controller
      * @param Request $request
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Components\CustomException
      */
     public function show(Request $request, int $id)
     {
-        $product = Product::with('price')->find($id);
+        $product = $this->product_service->getSingleProduct($id);
 
-        if (!is_null($product)) {
-            return Response::success($product, 'Successfully fetched a single product');
-        }
+        return Response::success($product, 'Successfully fetched a single product');
     }
 
     /**
@@ -59,26 +64,9 @@ class ProductsController extends Controller
             'qty' => 'required|numeric',
             'price' => 'required|numeric',
             'product_type_id' => ['required', Rule::in([1,2])]
-
         ]);
 
-        $price_attributes = ['price', 'discount', 'discount_percentage'];
-        $product_attributes = ['name', 'description', 'sku', 'qty', 'product_type_id'];
-
-        $product_data = $request->only($product_attributes);
-
-        $product = Product::create($product_data);
-
-        $price_data = [];
-
-        foreach ($price_attributes as $attribute) {
-            if (array_key_exists($attribute, $request->all())) {
-                $price_data[$attribute] = $request->get($attribute);
-            }
-        }
-
-        //Create product price entry
-        $product->price()->create($price_data);
+        $product = $this->product_service->createProduct($request->all());
 
         return Response::success($product, 'product successfully created');
     }
