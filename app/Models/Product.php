@@ -13,6 +13,8 @@ class Product extends Model
 {
     protected $table = 'products';
 
+    protected $fillable = ['name', 'description', 'sku', 'qty', 'product_type_id'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
