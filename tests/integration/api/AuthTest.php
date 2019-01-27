@@ -1,5 +1,6 @@
 <?php
 
+use App\Components\TokenManager;
 use App\Models\User;
 use Faker\Factory;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -27,11 +28,12 @@ class AuthTest extends TestCase
             'password' => 'password'
         ];
 
-        $this->post('/api/user/register', $user_data)->seeJsonContains([
-            'status' => 'success',
-            'message' => 'successfully created a new user',
-            'email' => $user_data['email']
-        ]);
+        $this->post('/api/user/register', $user_data)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'successfully created a new user',
+                'email' => $user_data['email']
+            ]);
 
     }
 
@@ -47,10 +49,55 @@ class AuthTest extends TestCase
             'password' => 'password'
         ];
 
-        $this->post('/api/user/login', $login_details)->seeJsonContains([
-            'status' => 'success',
-            'message' => 'access token issued'
-        ]);
+        $this->post('/api/user/login', $login_details)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'access token issued'
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function access_token_is_required_for_secured_routes()
+    {
+        $data = [];
+
+        $header = [];
+
+        $this->post('/api/products', $data, $header)
+            ->seeJsonContains([
+                'code' => 'ACCESS_DENIED',
+                'status' => 'error',
+                'message' => 'unauthorized access'
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function a_non_admin_user_do_not_have_access_to_admin_endpoints()
+    {
+        $user = factory(User::class)->create();
+
+        // create access token for user
+        $apiToken = TokenManager::generateApiToken();
+
+        $user->api_token = $apiToken;
+        $user->save();
+
+        $data = [];
+
+        $header = [
+            'Authorization' => $apiToken
+        ];
+
+        $this->post('/api/products', $data, $header)
+            ->seeJsonContains([
+                'code' => 'CANNOT_PERFORM_ACTION',
+                'status' => 'error',
+                'message' => 'Admin Permission needed'
+            ]);
     }
 
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Components\CustomException;
 use App\Components\ErrorMessage;
+use App\Components\TokenManager;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -51,18 +52,12 @@ class AuthService
             throw new CustomException(ErrorMessage::ACCESS_DENIED, 401);
         }
 
-        $apiToken = $this->generateApiToken();
+        $apiToken = TokenManager::generateApiToken();
 
-        $user->update(['api_token' => $apiToken]);
+        $user->api_token = $apiToken;
+        $user->save();
 
         return ['api_token' => $apiToken];
     }
 
-    /**
-     * @return string
-     */
-    public function generateApiToken(): string
-    {
-        return base64_encode(str_random(32));
-    }
 }
