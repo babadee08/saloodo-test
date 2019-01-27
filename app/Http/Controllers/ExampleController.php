@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ExampleController extends Controller
 {
     /**

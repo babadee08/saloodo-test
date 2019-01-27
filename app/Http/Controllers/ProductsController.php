@@ -63,7 +63,8 @@ class ProductsController extends Controller
             'description' => 'required',
             'qty' => 'required|numeric',
             'price' => 'required|numeric',
-            'product_type_id' => ['required', Rule::in([1,2])]
+            'product_type_id' => ['required', Rule::in([1,2])],
+            'products' => 'sometimes|required|array'
         ]);
 
         $product = $this->product_service->createProduct($request->all());

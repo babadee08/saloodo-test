@@ -37,24 +37,53 @@ class ProductService
     {
         $data = collect($data);
 
-        $price_attributes = ['price', 'discount', 'discount_percentage'];
         $product_attributes = ['name', 'description', 'sku', 'qty', 'product_type_id'];
 
         $product_data = $data->only($product_attributes);
 
         $product = Product::create($product_data->all());
 
+        if ($data->contains('products', array()) && $product->isBundle()) {
+            // create the sub products
+            $this->addBundleProducts($data->all(), $product);
+
+        }
+
+        $this->createProductPrice($data->all(), $product);
+
+        return $product;
+    }
+
+    /**
+     * @param array $data
+     * @param Product $product
+     */
+    public function createProductPrice(array $data, Product $product): void
+    {
+        $price_attributes = ['price', 'discount', 'discount_percentage'];
+
         $price_data = [];
 
         foreach ($price_attributes as $attribute) {
-            if (array_key_exists($attribute, $data->all())) {
-                $price_data[$attribute] = $data->get($attribute);
+            if (array_key_exists($attribute, $data)) {
+                $price_data[$attribute] = $data[$attribute];
             }
         }
 
         //Create product price entry
         $product->price()->create($price_data);
+    }
 
-        return $product;
+    /**
+     * @param array $data
+     * @param Product $product
+     */
+    public function addBundleProducts(array $data, Product $product): void
+    {
+        $sub_products = $data['products'];
+
+        foreach ($sub_products as $product_id) {
+            $product->bundle()->create(['product_id' => $product_id]);
+        }
     }
 }

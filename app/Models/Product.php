@@ -52,4 +52,15 @@ class Product extends Model
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function isBundle() : bool
+    {
+        if ($this->product_type_id == ProductType::BUNDLE_PRODUCT_ID) {
+            return true;
+        }
+        return false;
+    }
+
 }

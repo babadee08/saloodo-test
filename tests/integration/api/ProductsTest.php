@@ -50,13 +50,14 @@ class ProductsTest extends TestCase
 
 
     /**
+     * @param int $total
      * @return mixed
      */
-    public function createTestProducts()
+    public function createTestProducts(int $total = 10)
     {
         $product_type = ProductType::find(1);
 
-        $products = factory(Product::class, 10)->create(['product_type_id' => $product_type->id]);
+        $products = factory(Product::class, $total)->create(['product_type_id' => $product_type->id]);
 
         $products->map(function ($product) {
             $product->price()->create([
@@ -73,14 +74,7 @@ class ProductsTest extends TestCase
      */
     public function a_single_product_can_be_created_by_admin()
     {
-        //given that we have a admin with access token
-        $user = factory(User::class)->create(['is_admin' => true]);
-
-        // create access token for user
-        $apiToken = TokenManager::generateApiToken();
-
-        $user->api_token = $apiToken;
-        $user->save();
+        $apiToken = $this->generateValidToken();
 
         // given that we have a product create data
         $product_data = [
@@ -102,6 +96,55 @@ class ProductsTest extends TestCase
                 'message' => 'product successfully created',
                 'name' => $product_data['name']
             ]);
+    }
+
+    /**
+     * @test
+     */
+    public function a_product_bundle_can_be_created()
+    {
+        $products = $this->createTestProducts(3);
+
+        $valid_product_ids = $products->pluck('id')->all();
+
+        // given that we have a product create data
+        $product_data = [
+            'name' => $this->faker->name,
+            'description' => $this->faker->sentence,
+            'sku' => $this->faker->ean8,
+            'qty' => 5,
+            'product_type_id' => 2, // product type for bundle
+            'price' => 5000, // remember this is in cents
+            'products' => $valid_product_ids
+        ];
+
+        $header = [
+            'Authorization' => $this->generateValidToken()
+        ];
+
+        $this->post('/api/products', $product_data, $header)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'product successfully created',
+                'name' => $product_data['name']
+            ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function generateValidToken(): string
+    {
+        //given that we have a admin with access token
+        $user = factory(User::class)->create(['is_admin' => true]);
+
+        // create access token for user
+        $apiToken = TokenManager::generateApiToken();
+
+        $user->api_token = $apiToken;
+        $user->save();
+
+        return $apiToken;
     }
 
 }
