@@ -77,4 +77,17 @@ class ProductsController extends Controller
         return Response::success($product, 'product successfully created');
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Components\CustomException
+     */
+    public function updateProduct(Request $request, int $id)
+    {
+        $response = $this->product_service->updateProduct($request->all(), $id);
+
+        return Response::success($response, 'product successfully updated');
+    }
+
 }

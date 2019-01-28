@@ -59,4 +59,13 @@ class Price extends Model
         }
     }
 
+    /**
+     * @param $value
+     * Mutator to set the value of price to cents
+     */
+    public function setPriceAttribute($value)
+    {
+        $this->attributes['price'] = ($value * 100);
+    }
+
 }

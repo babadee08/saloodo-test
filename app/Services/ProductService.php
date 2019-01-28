@@ -9,6 +9,9 @@ use App\Models\Product;
 
 class ProductService
 {
+    private $product_attribute = ['name', 'description', 'sku', 'qty', 'product_type_id'];
+    private $price_attributes = ['price', 'discount', 'discount_percentage'];
+
     public function __construct()
     {
     }
@@ -44,9 +47,7 @@ class ProductService
      */
     public function createProduct(array $data)
     {
-        $product_attributes = ['name', 'description', 'sku', 'qty', 'product_type_id'];
-
-        $product_data = array_only($data, $product_attributes);
+        $product_data = array_only($data, $this->product_attribute);
 
         $product = Product::create($product_data);
 
@@ -67,11 +68,9 @@ class ProductService
      */
     public function createProductPrice(array $data, Product $product): void
     {
-        $price_attributes = ['price', 'discount', 'discount_percentage'];
-
         $price_data = [];
 
-        foreach ($price_attributes as $attribute) {
+        foreach ($this->price_attributes as $attribute) {
             if (array_key_exists($attribute, $data)) {
                 $price_data[$attribute] = $data[$attribute];
             }
@@ -92,5 +91,60 @@ class ProductService
         foreach ($sub_products as $product_id) {
             $product->bundle()->create(['product_id' => $product_id]);
         }
+    }
+
+    /**
+     * @param array $data
+     * @param int $id
+     * @return Product|Product[]|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @throws CustomException
+     */
+    public function updateProduct(array $data, int $id)
+    {
+        $product = Product::with('price')->find($id);
+
+        if (is_null($product)) {
+            throw new CustomException('Invalid Product id', ErrorMessage::RECORD_EXISTING);
+        }
+
+        // update basic Product info
+        $this->updateBasicProductDetails($data, $id);
+
+        // update product prices
+        $this->updateProductPrice($data, $product);
+
+        return $product->refresh();
+    }
+
+    /**
+     * @param array $data
+     * @param $product
+     */
+    public function updateProductPrice(array $data, Product $product): void
+    {
+        foreach ($this->price_attributes as $attribute) {
+            if (array_key_exists($attribute, $data)) {
+                $product->price->$attribute = $data[$attribute];
+            }
+        }
+
+        $product->price->save();
+    }
+
+    /**
+     * @param array $data
+     * @param int $id
+     */
+    public function updateBasicProductDetails(array $data, int $id): void
+    {
+        $update_data = [];
+
+        foreach ($this->product_attribute as $attribute) {
+            if (array_key_exists($attribute, $data)) {
+                $update_data[$attribute] = $data[$attribute];
+            }
+        }
+
+        Product::whereId($id)->update($update_data);
     }
 }

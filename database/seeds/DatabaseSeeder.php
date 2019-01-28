@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
 
         $products->map(function ($product) {
             $product->price()->create([
-                'price' => 1000,
-                'discount' => 200
+                'price' => 10,
+                'discount' => 2
             ]);
         });
 

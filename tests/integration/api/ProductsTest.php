@@ -61,8 +61,8 @@ class ProductsTest extends TestCase
 
         $products->map(function ($product) {
             $product->price()->create([
-                'price' => 1000,
-                'discount' => 200
+                'price' => 10,
+                'discount' => 2
             ]);
         });
 
@@ -145,6 +145,34 @@ class ProductsTest extends TestCase
         $user->save();
 
         return $apiToken;
+    }
+
+    /**
+     * @test
+     */
+    public function prices_of_products_can_be_modified()
+    {
+        $products = $this->createTestProducts(2);
+
+        $product = $products->first();
+
+        $update_data = [
+            'name' => 'Updated Name',
+            'price' => 25.75
+        ];
+
+        $header = [
+            'Authorization' => $this->generateValidToken()
+        ];
+
+        $price = $update_data['price'];
+        $this->put('/api/products/' . $product->id, $update_data, $header)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'product successfully updated',
+                'name' => $update_data['name'],
+                'price' => "$price"
+            ]);
     }
 
 }
