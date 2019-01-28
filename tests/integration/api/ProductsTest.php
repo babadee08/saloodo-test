@@ -175,4 +175,105 @@ class ProductsTest extends TestCase
             ]);
     }
 
+    /**
+     * @test
+     */
+    public function final_product_price_is_unchanged_if_discount_is_not_active()
+    {
+        $products = $this->createTestProducts(2);
+
+        $product = $products->first();
+
+        $this->get('/api/products/' . $product->id)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'Successfully fetched a single product',
+                'final_price' => $product->price->price
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function final_prices_can_be_affected_by_discount_amount()
+    {
+        $products = $this->createTestProducts(2);
+
+        $product = $products->first();
+
+        $update_data = [
+            'discount' => 2,
+            'discount_active' => true
+        ];
+
+        $header = [
+            'Authorization' => $this->generateValidToken()
+        ];
+
+        $discount = number_format($update_data['discount'], 2);
+        $this->put('/api/products/' . $product->id, $update_data, $header)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'product successfully updated',
+                'discount' => "$discount",
+                'final_price' => "8.00"
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function final_prices_can_be_affected_by_discount_percentage()
+    {
+        $products = $this->createTestProducts(2);
+
+        $product = $products->first();
+
+        $update_data = [
+            'discount_percentage' => 10,
+            'discount_active' => true
+        ];
+
+        $header = [
+            'Authorization' => $this->generateValidToken()
+        ];
+
+        $this->put('/api/products/' . $product->id, $update_data, $header)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'product successfully updated',
+                'discount' => "1.00",
+                'final_price' => "9.00"
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function discount_can_be_disabled_on_discount_prices()
+    {
+        $products = $this->createTestProducts(2);
+
+        $product = $products->first();
+
+        $product->price->discount_active = true;
+
+        $product->price->save();
+
+        $update_data = [
+            'discount_active' => false
+        ];
+
+        $header = [
+            'Authorization' => $this->generateValidToken()
+        ];
+
+        $this->put('/api/products/' . $product->id, $update_data, $header)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'product successfully updated',
+                'final_price' => $product->price->price
+            ]);
+    }
+
 }

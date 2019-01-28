@@ -19,6 +19,7 @@ class CreatePricesTable extends Migration
             $table->unsignedInteger('price'); // this is stored in the sub unit i.e. cents
             $table->unsignedInteger('discount')->nullable(); // this is also stored in cents
             $table->decimal('discount_percentage')->nullable();
+            $table->boolean('discount_active')->default(false);
             $table->timestamps();
 
             $table->foreign('product_id')

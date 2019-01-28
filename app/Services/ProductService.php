@@ -10,7 +10,7 @@ use App\Models\Product;
 class ProductService
 {
     private $product_attribute = ['name', 'description', 'sku', 'qty', 'product_type_id'];
-    private $price_attributes = ['price', 'discount', 'discount_percentage'];
+    private $price_attributes = ['price', 'discount', 'discount_percentage', 'discount_active'];
 
     public function __construct()
     {
@@ -124,6 +124,11 @@ class ProductService
     {
         foreach ($this->price_attributes as $attribute) {
             if (array_key_exists($attribute, $data)) {
+                if ($attribute == 'discount_percentage') {
+                    $product->price->$attribute = $data[$attribute];
+                    $product->price->discount = $this->calculateDiscount($product->price->price, $data[$attribute]);
+                    continue;
+                }
                 $product->price->$attribute = $data[$attribute];
             }
         }
@@ -146,5 +151,15 @@ class ProductService
         }
 
         Product::whereId($id)->update($update_data);
+    }
+
+    /**
+     * @param $price
+     * @param $percentage
+     * @return float|int
+     */
+    public function calculateDiscount($price, $percentage)
+    {
+        return $price * ($percentage / 100);
     }
 }
