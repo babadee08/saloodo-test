@@ -14,6 +14,15 @@ class ProductService
     }
 
     /**
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\Paginator
+     */
+    public function getAllProduct(int $perPage = 5)
+    {
+        return Product::with(['price', 'productType'])->simplePaginate($perPage);
+    }
+
+    /**
      * @param int $id
      * @return Product|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws CustomException

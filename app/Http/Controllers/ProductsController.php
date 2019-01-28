@@ -30,11 +30,16 @@ class ProductsController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Response::success(Product::all(), 'Successfully fetched all products');
+        $perPage = $request->get('perPage') ?: 5;
+
+        $products = $this->product_service->getAllProduct($perPage);
+
+        return Response::success($products, 'Successfully fetched all products');
     }
 
     /**

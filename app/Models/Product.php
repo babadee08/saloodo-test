@@ -15,6 +15,8 @@ class Product extends Model
 
     protected $fillable = ['name', 'description', 'sku', 'qty', 'product_type_id'];
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
