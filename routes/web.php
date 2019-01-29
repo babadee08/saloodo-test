@@ -23,16 +23,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('/products/{id}', 'ProductsController@updateProduct');
 
     // auth endpoints
-    $router->post('/user/register', 'AuthController@createUser');
-    $router->post('/user/login', 'AuthController@login');
+    $router->post('/register', 'AuthController@createUser');
+    $router->post('/login', 'AuthController@login');
 
     // user endpoints
-    $router->get('/user/order', 'UserController@getAllOrder');
-    $router->get('/user/order/{id}', 'UserController@getOrder');
+    $router->get('/order', 'UserController@getAllOrder');
+    $router->get('/order/{id}', 'UserController@getOrder');
 
     // user actions
-    $router->post('/user/cart', 'CartController@addItemToCart');
-    $router->get('/user/cart', 'CartController@getCart');
-    $router->post('/user/cart/checkout', 'CartController@checkout');
+    $router->post('/cart', 'CartController@addItemToCart');
+    $router->get('/cart', 'CartController@getCart');
+    $router->post('/cart/checkout', 'CartController@checkout');
 
 });

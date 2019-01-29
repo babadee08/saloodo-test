@@ -28,7 +28,7 @@ class AuthTest extends TestCase
             'password' => 'password'
         ];
 
-        $this->post('/api/user/register', $user_data)
+        $this->post('/api/register', $user_data)
             ->seeJsonContains([
                 'status' => 'success',
                 'message' => 'successfully created a new user',
@@ -49,7 +49,7 @@ class AuthTest extends TestCase
             'password' => 'password'
         ];
 
-        $this->post('/api/user/login', $login_details)
+        $this->post('/api/login', $login_details)
             ->seeJsonContains([
                 'status' => 'success',
                 'message' => 'access token issued'

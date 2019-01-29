@@ -41,7 +41,7 @@ class CustomerActionsTest extends TestCase
                 'product_id' => $product_id,
                 'qty' => 2,
             ];
-            $this->post('/api/user/cart', $post_data, $header)
+            $this->post('/api/cart', $post_data, $header)
                 ->seeJsonContains([
                     'status' => 'success',
                     'message' => 'item added to cart',
@@ -59,7 +59,7 @@ class CustomerActionsTest extends TestCase
             'Authorization' => $this->generateValidUserToken()
         ];
 
-        $this->get('/api/user/cart', $header)
+        $this->get('/api/cart', $header)
             ->seeJsonContains([
                 'status' => 'success',
                 'message' => 'cart items',
