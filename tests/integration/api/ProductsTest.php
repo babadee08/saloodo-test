@@ -48,27 +48,6 @@ class ProductsTest extends TestCase
         ]);
     }
 
-
-    /**
-     * @param int $total
-     * @return mixed
-     */
-    public function createTestProducts(int $total = 10)
-    {
-        $product_type = ProductType::find(1);
-
-        $products = factory(Product::class, $total)->create(['product_type_id' => $product_type->id]);
-
-        $products->map(function ($product) {
-            $product->price()->create([
-                'price' => 10,
-                'discount' => 2
-            ]);
-        });
-
-        return $products;
-    }
-
     /**
      * @test
      */

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property integer product_type_id
  * @property integer price
+ * @property string name
  */
 class Product extends Model
 {

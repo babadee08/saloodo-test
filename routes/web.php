@@ -31,8 +31,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/user/order/{id}', 'UserController@getOrder');
 
     // user actions
-    $router->get('/cart/add', 'CartController@addItemToCart');
-    $router->get('/cart', 'CartController@getCart');
-    $router->post('/cart/checkout', 'CartController@checkout');
+    $router->post('/user/cart', 'CartController@addItemToCart');
+    $router->get('/user/cart', 'CartController@getCart');
+    $router->post('/user/cart/checkout', 'CartController@checkout');
 
 });
