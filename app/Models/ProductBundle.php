@@ -11,9 +11,22 @@ class ProductBundle extends Model
 
     protected $fillable = ['product_id'];
 
+    protected $hidden = ['created_at', 'updated_at'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function parentProduct()
     {
         return $this->belongsTo(Product::class, 'bundle_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function subProduct()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
 }

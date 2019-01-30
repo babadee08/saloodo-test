@@ -3,6 +3,7 @@
 use App\Models\Product;
 use App\Models\ProductType;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,6 +26,17 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
-        factory(\App\Models\User::class, 5)->create();
+        // create an admin user
+        factory(\App\Models\User::class)->create([
+            'email'    => 'admin@saloodo.test',
+            'password' => Hash::make('administrator'),
+            'is_admin' => true
+        ]);
+
+        //create a regular user
+        factory(\App\Models\User::class)->create([
+            'email'    => 'user@saloodo.test',
+            'password' => Hash::make('password')
+        ]);
     }
 }

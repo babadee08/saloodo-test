@@ -32,10 +32,15 @@ class ProductService
      */
     public function getSingleProduct(int $id)
     {
-        $product = Product::with('price')->find($id);
+        $product = Product::with(['price', 'bundle.subProduct'])->find($id);
 
         if (is_null($product)) {
             throw new CustomException('Invalid Product id', ErrorMessage::RECORD_EXISTING);
+        }
+
+        // this is to handle single products with no sub-product
+        if ($product->bundle->count() == 0) {
+            $product->unsetRelation('bundle');
         }
 
         return $product;

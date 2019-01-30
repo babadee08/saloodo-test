@@ -65,9 +65,14 @@ class CartService
     {
         $cache_key = $this->getCacheKey();
 
-        if ($value = Cache::get($cache_key)) {
+        if ($values = Cache::get($cache_key)) {
+            $values = array_values($values);
+            $total = array_pluck($values, 'total');
 
-            return $value;
+            $response['total_price'] = array_sum($total);
+            $response['items'] = $values;
+
+            return $response;
         }
 
         return [];
@@ -102,7 +107,7 @@ class CartService
 
         $data['name'] = $product->name;
         $data['price'] = $product->price->final_price;
-        $data['total'] = number_format(($data['price'] * $data['qty']), 2);
+        $data['total'] = sprintf("%.2f", ($data['price'] * $data['qty']));
 
         $cart[$data['product_id']] = $data;
 

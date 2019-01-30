@@ -11,6 +11,8 @@ class OrderItems extends Model
 
     protected $fillable = ['order_id', 'product_id', 'qty', 'price'];
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

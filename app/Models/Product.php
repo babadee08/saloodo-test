@@ -58,9 +58,7 @@ class Product extends Model
      */
     public function bundle()
     {
-        if ($this->product_type_id == ProductType::BUNDLE_PRODUCT_ID) {
-            return $this->hasMany(ProductBundle::class, 'bundle_id');
-        }
+        return $this->hasMany(ProductBundle::class, 'bundle_id');
     }
 
     /**

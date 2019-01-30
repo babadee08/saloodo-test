@@ -11,6 +11,8 @@ class Order extends Model
 
     protected $fillable = ['user_id', 'address', 'payment_method', 'total_price'];
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

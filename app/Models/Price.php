@@ -35,7 +35,7 @@ class Price extends Model
      */
     public function getPriceAttribute($value)
     {
-        return number_format( $value / 100, 2);
+        return sprintf("%.2f", $value / 100);
     }
 
     /**
@@ -45,7 +45,7 @@ class Price extends Model
      */
     public function getDiscountAttribute($value)
     {
-        return number_format( $value / 100, 2);
+        return sprintf("%.2f", $value / 100);
     }
 
     /**
@@ -55,12 +55,12 @@ class Price extends Model
     public function getFinalPriceAttribute()
     {
         if (!$this->discount_active) {
-            return number_format( $this->price, 2);
+            return $this->price;
         }
 
         if (!is_null($this->discount)) {
-            $final_price =  $this->price - $this->discount;
-            return number_format( $final_price, 2);
+            $final_price =  sprintf("%.2f", ($this->price - $this->discount));
+            return $final_price;
         }
     }
 
