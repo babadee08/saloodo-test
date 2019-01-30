@@ -41,5 +41,6 @@ $factory->define(\App\Models\Order::class, function (Faker $faker) {
         },
         'address' => $faker->address,
         'payment_method' => $faker->creditCardType,
+        'total_price' => 1000
     ];
 });

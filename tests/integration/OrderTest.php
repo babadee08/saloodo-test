@@ -28,7 +28,8 @@ class OrderTest extends TestCase
 
         $user->createOrder([
             'address' => $this->faker->address,
-            'payment_method' => $this->faker->creditCardType
+            'payment_method' => $this->faker->creditCardType,
+            'total_price' => 1000
         ]);
 
         $this->assertEquals($user->order->count(), 1);
