@@ -49,4 +49,21 @@ class CartController extends Controller
         return Response::success($cart_items, 'cart items');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function checkoutCart(Request $request)
+    {
+        $this->validate($request, [
+            'address' => 'required',
+            'payment_method' => 'required'
+        ]);
+
+        $order = $this->cartService->placeOrder($request->only(['address', 'payment_method']));
+
+        return Response::success($order, 'you order has been received');
+    }
+
 }

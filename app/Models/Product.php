@@ -35,6 +35,14 @@ class Product extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItems::class);
+    }
+
+    /**
      * @return bool
      */
     public function hasPrice() : bool

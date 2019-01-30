@@ -18,4 +18,12 @@ class OrderItems extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

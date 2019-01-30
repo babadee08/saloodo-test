@@ -13,11 +13,11 @@ class CartService
     const CACHE_PREFIX = 'CART';
     const DEFAULT_TIMEOUT = 60 * 60; // in minutes
 
-    private $userID;
+    private $user;
 
     public function __construct(Request $request)
     {
-        $this->userID = $request->user()->id;
+        $this->user = $request->user();
     }
 
     /**
@@ -88,7 +88,7 @@ class CartService
      */
     private function getCacheKey() : string
     {
-        return self::CACHE_PREFIX . ':' . $this->userID;
+        return self::CACHE_PREFIX . ':' . $this->user->id;
     }
 
     /**
@@ -101,11 +101,34 @@ class CartService
         $cache_key = $this->getCacheKey();
 
         $data['name'] = $product->name;
-        $data['unit_price'] = $product->price->final_price;
-        $data['total'] = number_format(($data['unit_price'] * $data['qty']), 2);
+        $data['price'] = $product->price->final_price;
+        $data['total'] = number_format(($data['price'] * $data['qty']), 2);
 
         $cart[$data['product_id']] = $data;
 
         Cache::put($cache_key, $cart, self::DEFAULT_TIMEOUT);
+    }
+
+    /**
+     * @param array $order_data
+     * @return mixed
+     */
+    public function placeOrder(array $order_data)
+    {
+        $items = array_values($this->clearCart());
+
+        $total = array_pluck($items, 'total');
+
+        $order_data['total_price'] = array_sum($total);
+
+        $order = $this->user->createOrder($order_data);
+
+        array_map(function ($item) use ($order) {
+            $order->orderItems()->create($item);
+        }, $items);
+
+        $order->refresh();
+
+        return $order;
     }
 }

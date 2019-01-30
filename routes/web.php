@@ -33,6 +33,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // user actions
     $router->post('/cart', 'CartController@addItemToCart');
     $router->get('/cart', 'CartController@getCart');
-    $router->post('/cart/checkout', 'CartController@checkout');
+    $router->post('/cart/checkout', 'CartController@checkoutCart');
 
 });

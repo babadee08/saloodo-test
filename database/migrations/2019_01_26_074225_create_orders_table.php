@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('user_id');
             $table->text('address');
             $table->string('payment_method');
+            $table->integer('total_price');
             $table->boolean('delivered')->default(false);
             $table->timestamps();
         });

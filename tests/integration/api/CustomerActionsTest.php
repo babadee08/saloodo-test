@@ -2,9 +2,18 @@
 
 use App\Components\TokenManager;
 use App\Models\User;
+use Faker\Factory;
 
 class CustomerActionsTest extends TestCase
 {
+    private $faker;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->faker = Factory::create();
+    }
 
     /**
      * @return string
@@ -63,7 +72,30 @@ class CustomerActionsTest extends TestCase
             ->seeJsonContains([
                 'status' => 'success',
                 'message' => 'cart items',
-                'unit_price' => "10.00"
+                'price' => "10.00"
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function a_user_can_checkout_their_cart()
+    {
+        $body = [
+            'address' => $this->faker->address,
+            'payment_method' => $this->faker->creditCardType
+        ];
+
+        $header = [
+            'Authorization' => $this->generateValidUserToken()
+        ];
+
+        $this->post('/api/cart/checkout', $body, $header)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'you order has been received',
+                'id' => 1,
+                'total_price' => '60.00'
             ]);
     }
 
