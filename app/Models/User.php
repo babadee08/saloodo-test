@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
+/**
+ * @property string api_token
+ * @property string name
+ * @property string email
+ */
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
@@ -33,13 +38,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function order()
+    public function orders()
     {
         return $this->hasMany(Order::class);
     }
 
     public function createOrder(array $data)
     {
-        return $this->order()->create($data);
+        return $this->orders()->create($data);
     }
 }

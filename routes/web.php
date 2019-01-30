@@ -27,8 +27,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/login', 'AuthController@login');
 
     // user endpoints
-    $router->get('/order', 'UserController@getAllOrder');
-    $router->get('/order/{id}', 'UserController@getOrder');
+    $router->get('/orders', 'OrderController@index');
+    $router->get('/orders/{id}', 'OrderController@getOrder');
 
     // user actions
     $router->post('/cart', 'CartController@addItemToCart');

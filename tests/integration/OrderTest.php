@@ -32,7 +32,7 @@ class OrderTest extends TestCase
             'total_price' => 1000
         ]);
 
-        $this->assertEquals($user->order->count(), 1);
+        $this->assertEquals($user->orders->count(), 1);
     }
 
     /**
