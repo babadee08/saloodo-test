@@ -65,15 +65,14 @@ $ docker-compose run --rm --no-deps webapp php artisan route:list
 
 Clients can access to the REST API. API requests require authentication via token. You can create a new token in your user profile.
 
-Then, you can use this token either in Authorization header :
-
-All API endpoints are prefixed by ```api```.
+Then, you can use this token in Authorization header :
 
 ```bash
 
 # Authorization Header
 curl --header "Authorization: your_private_token_here" http://localhost:8000/api/posts
 ```
+All API endpoints are prefixed by ```api```.
 
 Here is also a link to the [Postman Collection](https://www.getpostman.com/collections/036dd8b36ae0c47def37) to access a lot of the endpoints
 
