@@ -61,6 +61,19 @@ class CustomerActionsTest extends TestCase
                     'product_id' => $valid_product_ids[0]
                 ]);
         }
+
+        // test to update cart Items
+        $post_data = [
+            'product_id' => $valid_product_ids[0],
+            'qty' => 1,
+        ];
+
+        $this->post('/api/cart', $post_data, $header)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'item added to cart',
+                'product_id' => $valid_product_ids[0]
+            ]);
     }
 
     /**
@@ -103,7 +116,7 @@ class CustomerActionsTest extends TestCase
                 'status' => 'success',
                 'message' => 'you order has been received',
                 'id' => 1,
-                'total_price' => '60.00'
+                'total_price' => '70.00'
             ]);
     }
 
@@ -170,6 +183,140 @@ class CustomerActionsTest extends TestCase
         });
 
         return $order;
+    }
+
+    /**
+     * @test
+     */
+    public function it_fails_when_a_user_can_add_invalid_item_to_cart()
+    {
+        $user = $this->generateUserWithToken();
+
+        $header = [
+            'Authorization' => $user->api_token
+        ];
+        $post_data = [
+            'product_id' => 400,
+            'qty' => 2,
+        ];
+
+        $this->post('/api/cart', $post_data, $header)
+            ->seeJsonContains([
+                'code' => 'RECORD_NOT_EXISTING',
+                'status' => 'error',
+                'message' => 'Invalid Product id',
+                'data' => null
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function a_user_cannot_add_qty_greater_than_item_to_cart()
+    {
+        $products = $this->createTestProducts(3);
+
+        $valid_product_ids = $products->pluck('id')->all();
+
+        $user = $this->generateUserWithToken();
+
+        $header = [
+            'Authorization' => $user->api_token
+        ];
+
+        $post_data = [
+            'product_id' => $valid_product_ids[0],
+            'qty' => 20,
+        ];
+        $this->post('/api/cart', $post_data, $header)
+            ->seeJsonContains([
+                'code' => 'OUT_OF_STOCK',
+                'status' => 'error',
+                'message' => 'Product out of stock',
+                'data' => []
+            ]);
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function a_user_can_retrieve_empty_cart_items()
+    {
+        $user = $this->generateUserWithToken();
+
+        $header = [
+            'Authorization' => $user->api_token
+        ];
+
+        $this->get('/api/cart', $header)
+            ->seeJsonContains([
+                'status' => 'success',
+                'message' => 'cart items',
+                'data' => []
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function a_user_do_not_have_orders_if_they_were_never_created()
+    {
+        $user = $this->generateUserWithToken();
+
+        $header = [
+            'Authorization' => $user->api_token
+        ];
+
+        $this->get('/api/orders', $header)
+            ->seeJsonContains([
+                'code' => 'RECORD_NOT_EXISTING',
+                'status' => 'error',
+                'message' => 'You dont have any orders yet!'
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function a_user_cannot_see_order_details_if_order_id_is_wrong()
+    {
+        $user = $this->generateUserWithToken();
+
+        $header = [
+            'Authorization' => $user->api_token
+        ];
+
+        $this->get('/api/orders/200', $header)
+            ->seeJsonContains([
+                'code' => 'RECORD_NOT_EXISTING',
+                'status' => 'error',
+                'message' => 'invalid order id!'
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function a_user_cannot_see_order_details_if_it_belongs_to_another_user()
+    {
+        $user = $this->generateUserWithToken();
+
+        $another_user = factory(User::class)->create();
+
+        $order = $this->generateTestOrders($another_user);
+
+        $header = [
+            'Authorization' => $user->api_token
+        ];
+
+        $this->get('/api/orders/' . $order->id, $header)
+            ->seeJsonContains([
+                'code' => 'RECORD_NOT_EXISTING',
+                'status' => 'error',
+                'message' => 'Order not for user!'
+            ]);
     }
 
 }

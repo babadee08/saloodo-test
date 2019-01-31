@@ -25,7 +25,7 @@ class AuthService
         $user = User::where('email', $data['email'])->first();
 
         if (!is_null($user)) {
-            throw new CustomException(ErrorMessage::RECORD_EXISTING, 400);
+            throw new CustomException('Email has been taken', ErrorMessage::RECORD_EXISTING);
         }
 
         $data['password'] = Hash::make($data['password']);
@@ -45,11 +45,11 @@ class AuthService
         $user = User::where('email', $data['email'])->first();
 
         if (is_null($user)) {
-            throw new CustomException(ErrorMessage::RECORD_NOT_EXISTING, 400);
+            throw new CustomException('Wrong username or password', ErrorMessage::RECORD_NOT_EXISTING);
         }
 
         if (!Hash::check($data['password'], $user->password)) {
-            throw new CustomException(ErrorMessage::ACCESS_DENIED, 401);
+            throw new CustomException('Wrong username or password', ErrorMessage::ACCESS_DENIED);
         }
 
         $apiToken = TokenManager::generateApiToken();

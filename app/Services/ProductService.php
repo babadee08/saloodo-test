@@ -35,7 +35,7 @@ class ProductService
         $product = Product::with(['price', 'bundle.subProduct'])->find($id);
 
         if (is_null($product)) {
-            throw new CustomException('Invalid Product id', ErrorMessage::RECORD_EXISTING);
+            throw new CustomException('Invalid Product id', ErrorMessage::RECORD_NOT_EXISTING);
         }
 
         // this is to handle single products with no sub-product
@@ -109,7 +109,7 @@ class ProductService
         $product = Product::with('price')->find($id);
 
         if (is_null($product)) {
-            throw new CustomException('Invalid Product id', ErrorMessage::RECORD_EXISTING);
+            throw new CustomException('Invalid Product id', ErrorMessage::RECORD_NOT_EXISTING);
         }
 
         // update basic Product info

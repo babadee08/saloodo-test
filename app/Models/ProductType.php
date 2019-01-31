@@ -16,7 +16,10 @@ class ProductType extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function productType()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function products()
     {
         return $this->hasMany(Product::class);
     }

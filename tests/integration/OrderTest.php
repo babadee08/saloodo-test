@@ -26,13 +26,15 @@ class OrderTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $user->createOrder([
+        $order = $user->createOrder([
             'address' => $this->faker->address,
             'payment_method' => $this->faker->creditCardType,
             'total_price' => 1000
         ]);
 
         $this->assertEquals($user->orders->count(), 1);
+
+        $this->assertEquals($order->user->id, $user->id);
     }
 
     /**
@@ -54,5 +56,30 @@ class OrderTest extends TestCase
         });
 
         $this->assertEquals($order->orderItems->count(), 3);
+
+        $item = $order->orderItems->first();
+
+        $this->assertEquals($item->order->id, $order->id);
+    }
+
+    /**
+     * @test
+     */
+    public function a_product_can_be_added_to_many_orders()
+    {
+        $product = factory(Product::class)->create();
+
+        $orders = factory(Order::class, 3)->create();
+
+        $orders->map(function ($order) use ($product) {
+            $order->orderItems()
+                ->create([
+                    'product_id' => $product->id,
+                    'qty' => 1,
+                    'price' => 5000
+                ]);
+        });
+
+        $this->assertEquals($product->orderItems->count(), $orders->count());
     }
 }

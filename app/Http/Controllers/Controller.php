@@ -7,4 +7,8 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     //
+    public function error()
+    {
+        throw new \Exception();
+    }
 }

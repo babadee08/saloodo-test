@@ -30,11 +30,11 @@ class CartService
         $product = Product::with('price')->find($data['product_id']);
 
         if (empty($product)) {
-            throw new CustomException('Invalid Product id', ErrorMessage::RECORD_EXISTING);
+            throw new CustomException('Invalid Product id', ErrorMessage::RECORD_NOT_EXISTING);
         }
 
         if ($product->qty < $data['qty']) {
-            throw new CustomException('Product out of stock', ErrorMessage::OUT_OF_STOCK);
+            throw (new CustomException('Product out of stock', ErrorMessage::OUT_OF_STOCK))->setData([]);
         }
 
         $cache_key = $this->getCacheKey();

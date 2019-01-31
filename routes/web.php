@@ -15,6 +15,9 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+// Added to improve test coverage
+$router->get('/error', 'Controller@error');
+
 $router->group(['prefix' => 'api'], function () use ($router) {
     // products endpoints
     $router->get('/products', 'ProductsController@index');

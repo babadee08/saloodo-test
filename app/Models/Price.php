@@ -58,10 +58,9 @@ class Price extends Model
             return $this->price;
         }
 
-        if (!is_null($this->discount)) {
-            $final_price =  sprintf("%.2f", ($this->price - $this->discount));
-            return $final_price;
-        }
+        $final_price =  sprintf("%.2f", ($this->price - $this->discount));
+
+        return $final_price;
     }
 
     /**

@@ -255,4 +255,40 @@ class ProductsTest extends TestCase
             ]);
     }
 
+    /**
+     * @test
+     */
+    public function it_fails_to_fetch_invalid_product()
+    {
+        $this->get('/api/products/400')
+            ->seeJsonContains([
+                'code' => 'RECORD_NOT_EXISTING',
+                'status' => 'error',
+                'message' => 'Invalid Product id',
+                'data' => null
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function invalid_products_cannot_be_modified()
+    {
+        $update_data = [
+            'name' => 'Updated Name'
+        ];
+
+        $header = [
+            'Authorization' => $this->generateValidToken()
+        ];
+
+        $this->put('/api/products/400', $update_data, $header)
+            ->seeJsonContains([
+                'code' => 'RECORD_NOT_EXISTING',
+                'status' => 'error',
+                'message' => 'Invalid Product id',
+                'data' => null
+            ]);
+    }
+
 }

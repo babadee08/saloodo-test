@@ -29,7 +29,7 @@ class OrderController extends Controller
     {
         $orders = $request->user()->orders;
 
-        if (empty($orders)) {
+        if ($orders->isEmpty()) {
             throw new CustomException('You dont have any orders yet!', ErrorMessage::RECORD_NOT_EXISTING);
         }
 

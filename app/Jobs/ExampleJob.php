@@ -2,6 +2,9 @@
 
 namespace App\Jobs;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ExampleJob extends Job
 {
     /**
