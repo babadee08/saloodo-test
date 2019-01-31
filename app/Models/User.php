@@ -43,6 +43,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * @param array $data
+     * @return Model
+     */
     public function createOrder(array $data)
     {
         return $this->orders()->create($data);

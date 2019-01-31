@@ -54,6 +54,9 @@ class Handler extends ExceptionHandler
             return Response::error($exception->getSpecialCode(), $exception->getMessage(), $exception->getData());
         } else if ($exception instanceof NotFoundHttpException){
             return Response::error(ErrorMessage::ROUTE_NOT_FOUND, $exception->getMessage(), null, 404);
+        } else if ($exception instanceof ValidationException) {
+            $error_message = $exception->validator->messages()->first();
+            return Response::error(ErrorMessage::INVALID_INPUT, $error_message, null, 500);
         } else {
             return Response::error(ErrorMessage::INTERNAL_ERROR, $exception->getMessage(), null, 500);
         }
