@@ -1,5 +1,7 @@
 ## Saloodo Backend Developer Test
 
+[![Build Status](https://travis-ci.org/babadee08/saloodo-test.svg?branch=master)](https://travis-ci.org/babadee08/saloodo-test)
+
 This is a simplified prototype app that provide a set of rest interfaces to perform product management actions by admins and can also enable customers place orders on the products.
 
 Even though the suggested framework was [Symfony](https://symfony.com/), The Project is based off [Laravel-Lumen](https://lumen.laravel.com) instead. The reason for this is that Lumen is based off Symfony components and they share the same architectural design, concepts and patterns. 
