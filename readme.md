@@ -1,6 +1,7 @@
 ## Saloodo Backend Developer Test
 
 [![Build Status](https://travis-ci.org/babadee08/saloodo-test.svg?branch=master)](https://travis-ci.org/babadee08/saloodo-test)
+[![codecov](https://codecov.io/gh/babadee08/saloodo-test/branch/master/graph/badge.svg)](https://codecov.io/gh/babadee08/saloodo-test)
 
 This is a simplified prototype app that provide a set of rest interfaces to perform product management actions by admins and can also enable customers place orders on the products.
 
